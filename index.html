@@ -32,6 +32,11 @@
         }
         .header-left {
             display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .title-row {
+            display: flex;
             align-items: baseline;
             flex-wrap: wrap;
             gap: 16px;
@@ -41,6 +46,25 @@
             font-size: 1.5rem;
             font-weight: 600;
             color: #1e2a3a;
+        }
+        /* Увеличенный стиль для логиста */
+        .logist-phone {
+            font-size: 1rem;
+            color: #2c7da0;
+            background: #eef2fa;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-weight: 500;
+            width: fit-content;
+        }
+        .logist-phone span {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: #1e4663;
+            letter-spacing: 0.3px;
         }
         .task-counter {
             background: #e9edf2;
@@ -432,9 +456,14 @@
 <div class="dashboard">
     <div class="header">
         <div class="header-left">
-            <h1>📦 Доставки ПЦ Уфа </h1>
-            <div class="task-counter" id="tasks-total-badge">Загрузка...</div>
-            <div class="last-updated" id="last-updated"></div>
+            <div class="title-row">
+                <h1>📦 Доставки ПЦ Уфа</h1>
+                <div class="task-counter" id="tasks-total-badge">Загрузка...</div>
+                <div class="last-updated" id="last-updated"></div>
+            </div>
+            <div class="logist-phone">
+                📞 <strong>Ваш логист:</strong> <span>8(961) 923-21-28</span>
+            </div>
         </div>
         <div class="header-buttons">
             <button class="call-courier-btn" id="call-courier-btn">🚚 Вызвать курьера</button>
@@ -476,9 +505,9 @@
     const VALID_PASSWORD = "EDC980848";
     // ==========================================
     
-    // НОВЫЙ ВЕБ-ХУК ДЛЯ ГРУППЫ 116, УФА
+    // ВЕБ-ХУК ДЛЯ ГРУППЫ 116, УФА
     const webhookUrl = 'https://1cv.bitrix24.ru/rest/19092/oszjnd4mspktk8lv/';
-    const GROUP_ID = 116;                   // Изменено на 116
+    const GROUP_ID = 116;
     const CACHE_KEY = 'kanban_ufa_group116_v1';
     const CACHE_DURATION = 2 * 60 * 1000;
 
@@ -488,7 +517,7 @@
     let isLoading = false;
     let columnsMap = new Map();
 
-    // Очистка старых кэшей других проектов (на всякий случай)
+    // Очистка старых кэшей других проектов
     const oldCachePatterns = ['kanban_v', 'kanban_ufa_'];
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
@@ -555,7 +584,6 @@
     const iframe = document.getElementById('courierIframe');
 
     function openModal() {
-        // НОВАЯ ССЫЛКА НА ФОРМУ ВЫЗОВА КУРЬЕРА ДЛЯ ПЦ УФА
         iframe.src = 'https://b24-022gna.bitrix24site.ru/crm_form_smphv/';
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -628,7 +656,6 @@
             else if (title === "Курьер назначен") courierStageId = String(s.ID);
             else if (title === "Доставка завершена") completedStageId = String(s.ID);
         }
-        // Валидация: если какой-то этап не найден, пробуем стандартные id fallback (на случай другой локализации)
         if (!distributionStageId || !courierStageId || !completedStageId) {
             console.warn("Не все стадии найдены по названиям, проверьте канбан группы 116");
         }
